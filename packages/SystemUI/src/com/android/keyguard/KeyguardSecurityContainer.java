@@ -282,6 +282,8 @@ public class KeyguardSecurityContainer extends ConstraintLayout {
 
     public interface SwipeListener {
         void onSwipeUp();
+        /** */
+        void onSwipeDown();
     }
 
     @VisibleForTesting
@@ -544,6 +546,11 @@ public class KeyguardSecurityContainer extends ConstraintLayout {
                 if (mSwipeListener != null) {
                     mSwipeListener.onSwipeUp();
                 }
+            } else if (getTranslationY() > TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    MIN_DRAG_SIZE, getResources().getDisplayMetrics())) {
+                if (mSwipeListener != null) {
+                    mSwipeListener.onSwipeDown();
+                }
             }
         }
         return true;
@@ -792,8 +799,6 @@ public class KeyguardSecurityContainer extends ConstraintLayout {
 
     void reloadColors() {
         mViewMode.reloadColors();
-        setBackgroundColor(Utils.getColorAttrDefaultColor(getContext(),
-                com.android.internal.R.attr.materialColorSurface));
     }
 
     /** Handles density or font scale changes. */

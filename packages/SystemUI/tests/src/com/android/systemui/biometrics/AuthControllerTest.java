@@ -92,13 +92,13 @@ import com.android.systemui.SysuiTestCase;
 import com.android.systemui.biometrics.domain.interactor.LogContextInteractor;
 import com.android.systemui.biometrics.domain.interactor.PromptCredentialInteractor;
 import com.android.systemui.biometrics.domain.interactor.PromptSelectorInteractor;
-import com.android.systemui.biometrics.ui.viewmodel.AuthBiometricFingerprintViewModel;
 import com.android.systemui.biometrics.ui.viewmodel.CredentialViewModel;
 import com.android.systemui.biometrics.ui.viewmodel.PromptViewModel;
 import com.android.systemui.flags.FakeFeatureFlags;
 import com.android.systemui.flags.Flags;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
 import com.android.systemui.statusbar.CommandQueue;
+import com.android.systemui.statusbar.VibratorHelper;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.Execution;
 import com.android.systemui.util.concurrency.FakeExecution;
@@ -176,8 +176,6 @@ public class AuthControllerTest extends SysuiTestCase {
     @Mock
     private PromptSelectorInteractor mPromptSelectionInteractor;
     @Mock
-    private AuthBiometricFingerprintViewModel mAuthBiometricFingerprintViewModel;
-    @Mock
     private CredentialViewModel mCredentialViewModel;
     @Mock
     private PromptViewModel mPromptViewModel;
@@ -196,6 +194,8 @@ public class AuthControllerTest extends SysuiTestCase {
     private ArgumentCaptor<String> mMessageCaptor;
     @Mock
     private Resources mResources;
+    @Mock
+    private VibratorHelper mVibratorHelper;
 
     private TestableContext mContextSpy;
     private Execution mExecution;
@@ -994,6 +994,25 @@ public class AuthControllerTest extends SysuiTestCase {
                 eq(null) /* credentialAttestation */);
     }
 
+    @Test
+    public void testShowDialog_whenOwnerNotInForeground() {
+        PromptInfo promptInfo = createTestPromptInfo();
+        promptInfo.setAllowBackgroundAuthentication(false);
+        switchTask("other_package");
+        mAuthController.showAuthenticationDialog(promptInfo,
+                mReceiver /* receiver */,
+                new int[]{1} /* sensorIds */,
+                false /* credentialAllowed */,
+                true /* requireConfirmation */,
+                0 /* userId */,
+                0 /* operationId */,
+                "testPackage",
+                REQUEST_ID);
+
+        assertNull(mAuthController.mCurrentDialog);
+        verify(mDialog1, never()).show(any(), any());
+    }
+
     private void showDialog(int[] sensorIds, boolean credentialAllowed) {
         mAuthController.showAuthenticationDialog(createTestPromptInfo(),
                 mReceiver /* receiver */,
@@ -1073,11 +1092,10 @@ public class AuthControllerTest extends SysuiTestCase {
                     mFingerprintManager, mFaceManager, () -> mUdfpsController,
                     () -> mSideFpsController, mDisplayManager, mWakefulnessLifecycle,
                     mPanelInteractionDetector, mUserManager, mLockPatternUtils, mUdfpsLogger,
-                    mLogContextInteractor, () -> mAuthBiometricFingerprintViewModel,
-                    () -> mBiometricPromptCredentialInteractor, () -> mPromptSelectionInteractor,
-                    () -> mCredentialViewModel, () -> mPromptViewModel,
-                    mInteractionJankMonitor, mHandler,
-                    mBackgroundExecutor, mUdfpsUtils);
+                    mLogContextInteractor, () -> mBiometricPromptCredentialInteractor,
+                    () -> mPromptSelectionInteractor, () -> mCredentialViewModel,
+                    () -> mPromptViewModel, mInteractionJankMonitor, mHandler, mBackgroundExecutor,
+                    mUdfpsUtils, mVibratorHelper);
         }
 
         @Override
