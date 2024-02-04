@@ -230,6 +230,10 @@ interface ShadeViewController {
      * change.
      */
     fun showAodUi()
+    
+    fun getScrollerLayoutController(): NotificationStackScrollLayoutController?
+    
+    fun getKeyguardBottomAreaView(): KeyguardBottomAreaView?
 
     /**
      * This method should not be used anymore, you should probably use [.isShadeFullyOpen] instead.
