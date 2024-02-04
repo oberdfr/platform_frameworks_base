@@ -5323,5 +5323,16 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             return super.performAccessibilityAction(host, action, args);
         }
     }
+
+    @Override
+    public NotificationStackScrollLayoutController getScrollerLayoutController() {
+        return mNotificationStackScrollLayoutController;
+    }
+
+    @Override
+    public KeyguardBottomAreaView getKeyguardBottomAreaView() {
+        return mKeyguardBottomArea;
+    }
+
 }
 

@@ -92,6 +92,8 @@ class ShadeViewControllerEmptyImpl @Inject constructor() : ShadeViewController {
 
     override val shadeHeadsUpTracker = ShadeHeadsUpTrackerEmptyImpl()
     override val shadeFoldAnimator = ShadeFoldAnimatorEmptyImpl()
+    override fun getScrollerLayoutController(): NotificationStackScrollLayoutController? = null
+    override fun getKeyguardBottomAreaView(): KeyguardBottomAreaView? = null
 }
 
 class ShadeHeadsUpTrackerEmptyImpl : ShadeHeadsUpTracker {
