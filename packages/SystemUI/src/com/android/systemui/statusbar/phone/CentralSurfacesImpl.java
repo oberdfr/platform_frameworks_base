@@ -2906,15 +2906,13 @@ public class CentralSurfacesImpl implements CoreStartable, TunerService.Tunable,
                     // Delay if we're waking up, not mid-doze animation (which means we are
                     // cancelling a sleep), from the power button, on a device with a power button
                     // FPS, and 'press to unlock' is required.
-                    FingerprintManager fpm = mFingerprintManager.get();
                     mShouldDelayWakeUpAnimation =
                             !isPulsing()
                                     && mStatusBarStateController.getDozeAmount() == 1f
                                     && mWakefulnessLifecycle.getLastWakeReason()
                                     == PowerManager.WAKE_REASON_POWER_BUTTON
-                                    && fpm != null
-                                    && fpm.isPowerbuttonFps()
-                                    && fpm.hasEnrolledFingerprints()
+                                    && mFingerprintManager.get().isPowerbuttonFps()
+                                    && mFingerprintManager.get().hasEnrolledFingerprints()
                                     && !touchToUnlockAnytime;
                     if (DEBUG_WAKEUP_DELAY) {
                         Log.d(TAG, "mShouldDelayWakeUpAnimation=" + mShouldDelayWakeUpAnimation);
