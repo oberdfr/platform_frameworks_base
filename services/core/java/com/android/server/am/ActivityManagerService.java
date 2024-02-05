@@ -20299,6 +20299,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             app = mPidsSelfLocked.get(debugPid);
         }
         mOomAdjuster.mCachedAppOptimizer.binderError(debugPid, app, code, flags, err);
+    }
         
     public boolean isSwipeToScreenshotGestureActive() {
         synchronized (this) {
