@@ -1068,10 +1068,11 @@ public class ScreenDecorations implements CoreStartable, Dumpable {
                 mLogger.logRotationChanged(oldRotation, mRotation);
             }
             setupDecorations();
-            for (int id: DISPLAY_CUTOUT_IDS) {
-                final View view = getOverlayView(id);
-                if (view instanceof DisplayCutoutView) {
-                    ((DisplayCutoutView) view).updateCutout();
+            if (mCutoutViews != null) {
+                for (DisplayCutoutView dcv : mCutoutViews) {
+                    if (dcv != null) {
+                        dcv.updateCutout();
+                    }
                 }
             }
             if (mOverlays != null) {
